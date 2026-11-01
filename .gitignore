@@ -1,0 +1,24 @@
+# Python caches and local environments.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local traffic data, generated datasets, and model checkpoints.
+datasets/
+processed/
+short_flow_experiment/
+*.pcap
+*.pcapng
+*.pkl
+*.pth
+*.pt
+
+# Generated experiment artifacts.
+logs/
+outputs/
+models/
+cache/
+wandb/
+*.log

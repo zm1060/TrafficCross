@@ -1,0 +1,60 @@
+data:
+  dataset_name: 'ISCXVPN-Service'
+  pcap_dir: './datasets/${dataset_name}'
+  processed_dir: './processed/${dataset_name}'
+  split_ratio: [0.8, 0.1, 0.1]  # Train, validation, and test proportions.
+  split_seed: 128  # Use the same split when comparing IP identifier modes.
+  batch_size: 32
+  chunk_size: 10000  # Flows per packed dataset file.
+  num_workers: 4  # Training data loader workers.
+
+  labeling:
+    mode: 'directory'  # Use 'directory' or 'ip'.
+    ip_label_file: './xxxx-ip_labels.json'  # Required only in 'ip' mode.
+
+  mode:
+    process_pcap: true
+    pack_dataset: true
+
+  generation:
+    generate_images: true
+    generate_flows: true
+
+flow:
+  flow_key: '5-tuple'  # Protocol, source IP/port, and destination IP/port.
+  min_packets: 5  # Paper main experiments; smaller thresholds are ablations.
+  inactive_timeout: 60  # Seconds.
+  max_packets_per_flow: 500
+  bidirectional: true
+
+image:
+  size: [40, 40]
+  rows_per_packet: 8
+  header_rows: 2
+  bytes_per_row: 40
+  use_color: false
+  max_workers: 4  # Used by TrafficImageGenerator when initialized with config.
+  # original: preserve IPs; random: stable random endpoints per flow;
+  # role: fixed directional IPs and zero TCP/UDP ports; zero: zero all IPs.
+  ip_identifier_mode: 'role'  # Standard representation in the paper, Section 3.2.2.
+  random_seed: 128  # Seed for the 'random' IP identifier mode.
+
+model:
+  sequence:
+    max_seq_length: 128  # Sequence-only dataset length.
+
+training:
+  seed: 17  # Paper training seeds: 17, 29, 43, 71, 97; split seed stays 128.
+  learning_rate: 0.001
+  weight_decay: 0.01
+  max_epochs: 200
+
+paths:
+  log_dir: './logs'
+  output_dir: './outputs'
+  model_dir: './models'
+  cache_dir: './cache'
+
+logging:
+  level: 'INFO'
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
